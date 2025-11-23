@@ -59,7 +59,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 		);
 
 		// send response
-		res.json({
+		res.status(201).json({
 			accessToken: token,
 			message: "User created successfully",
 		});
@@ -71,5 +71,3 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 		return next(err);
 	}
 };
-
-export { createUser };
