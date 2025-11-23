@@ -1,5 +1,8 @@
+//* src/app.ts
+
 import express from "express";
 import globalErrorHandler from "./middlewares/error.middleware";
+import userRouter from "./user/user.route";
 
 const app = express();
 
@@ -9,6 +12,9 @@ app.get("/", (req, res, next) => {
 		message: "Welcome to eBook API Project",
 	});
 });
+
+// ---- API Routes -----
+app.use("/api/users", userRouter);
 
 // ---- Global Error Handler -----
 app.use(globalErrorHandler);
