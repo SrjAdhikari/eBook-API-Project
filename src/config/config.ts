@@ -4,6 +4,7 @@ const _config = {
 	port: process.env.PORT,
 	db_url: process.env.MONGODB_URI,
 	env: process.env.NODE_ENV,
+	jwt_secret: process.env.JWT_SECRET,
 };
 
 // Freeze the object to prevent changes
