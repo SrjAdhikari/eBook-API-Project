@@ -71,3 +71,64 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 		return next(err);
 	}
 };
+
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+	// validation
+	const { email, password } = req.body;
+	if (!email || !password) {
+		const error = createHttpError(400, "All fields are required");
+		return next(error);
+	}
+
+	// database operation
+	let user;
+	try {
+		user = await User.findOne({ email });
+		if (!user) {
+			const error = createHttpError(400, "User not found");
+			return next(error);
+		}
+	} catch (error) {
+		const err = createHttpError(500, "Error occurred while getting user");
+		return next(err);
+	}
+
+	// password check
+	try {
+		const isMatch = await bcrypt.compare(password, user.password);
+		if (!isMatch) {
+			const error = createHttpError(400, "Invalid credentials");
+			return next(error);
+		}
+	} catch (error) {
+		const err = createHttpError(500, "Error occurred while checking password");
+		return next(err);
+	}
+
+	// Token generation and response
+	try {
+		const token = jwt.sign(
+			{
+				sub: user._id,
+			},
+			JWT_SECRET,
+			{
+				expiresIn: "7d",
+			}
+		);
+
+		// send response
+		res.status(200).json({
+			accessToken: token,
+			message: "Login successfully",
+		});
+	} catch (error) {
+		const err = createHttpError(
+			500,
+			"Error occurred while signing the jwt token"
+		);
+		return next(err);
+	}
+};
+
+export { createUser, loginUser };
