@@ -1,7 +1,9 @@
 //* src/user/user.controller.ts
 
 import { Request, Response, NextFunction } from "express";
+import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
+import User from "./user.model";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
 	// validation
@@ -11,10 +13,21 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 		return next(error);
 	}
 
+	// database operation
+	const user = await User.findOne({ email });
+	if (user) {
+		const error = createHttpError(400, "User already exists with this email");
+		return next(error);
+	}
+
+	// password hash
+	const salt = await bcrypt.genSalt(10);
+	const hashedPassword = await bcrypt.hash(password, salt);
+
 	// process
-  
+
 	// send response
-	res.json({
+	res.json({         
 		message: "User created successfully",
 	});
 };
