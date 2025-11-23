@@ -6,6 +6,9 @@ import userRouter from "./user/user.route";
 
 const app = express();
 
+// Parse JSON request body
+app.use(express.json());
+
 // ---- Home Route -----
 app.get("/", (req, res, next) => {
 	res.json({
