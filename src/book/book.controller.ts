@@ -145,7 +145,8 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 		// Build absolute path of file saved by multer
 		const filePath = path.resolve(
 			__dirname,
-			"../../public/data/uploads", fileName
+			"../../public/data/uploads",
+			fileName
 		);
 
 		completeCoverImage = fileName;
@@ -238,4 +239,20 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 	}
 };
 
-export { createBook, updateBook };
+const getBooks = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const books = await Book.find();
+
+		res.status(200).json({
+			books,
+			message: "Books fetched successfully",
+		});
+	} catch (error) {
+		console.log(`Error occurred while fetching books: ${error}`);
+
+		const err = createHttpError(500, "Error occurred while fetching books");
+		return next(err);
+	}
+};
+
+export { createBook, updateBook, getBooks };

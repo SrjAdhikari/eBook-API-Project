@@ -1,7 +1,7 @@
 //* src/book/book.route.ts
 
 import { Router } from "express";
-import { createBook, updateBook } from "./book.controller";
+import { createBook, getBooks, updateBook } from "./book.controller";
 
 import upload from "../middlewares/upload.middleware";
 import authenticate from "../middlewares/auth.middleware";
@@ -30,6 +30,9 @@ bookRouter.patch(
 	updateBook
 );
 
-// Delete Book
 // Get Book
+bookRouter.get("/list", getBooks);
+
+// Delete Book
+
 export default bookRouter;
