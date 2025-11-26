@@ -255,4 +255,31 @@ const getBooks = async (req: Request, res: Response, next: NextFunction) => {
 	}
 };
 
-export { createBook, updateBook, getBooks };
+const getSingleBook = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { bookId } = req.params;
+
+		// Check if book exists
+		const book = await Book.findById(bookId);
+		if (!book) {
+			const error = createHttpError(404, "Book not found");
+			return next(error);
+		}
+
+		res.status(200).json({
+			book,
+			message: "Book fetched successfully",
+		});
+	} catch (error) {
+		console.log(`Error occurred while fetching the book: ${error}`);
+
+		const err = createHttpError(500, "Error occurred while fetching the book");
+		return next(err);
+	}
+};
+
+export { createBook, updateBook, getBooks, getSingleBook };
